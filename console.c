@@ -9,20 +9,20 @@ COORD createCoordObject(int x, int y) {
   return xy;
 }
 
-SMALL_RECT createSmallRectObject(int Top, int Left, int Bottom, int Right) {
+SMALL_RECT createSmallRectObject(int top, int left, int bottom, int right) {
   SMALL_RECT sr;
-  sr.Top = Top;
-  sr.Left = Left;
-  sr.Bottom = Bottom;
-  sr.Right = Right;
+  sr.Top = top;
+  sr.Left = left;
+  sr.Bottom = bottom;
+  sr.Right = right;
   return sr;
 }
 
 //==================================================
 
-int COORD2int(COORD xy, COORD xySize) {
-  if (xy.X >= xySize.X || xy.Y >= xySize.Y) return -1;
-  return ((int)xy.X) + ((int)xy.Y)*((int)xySize.X);  
+int COORD2int(int x, int y, COORD xySize) {
+  if (x < 0 || y < 0 || x >= xySize.X || y >= xySize.Y) return -1;
+  return x + y*((int)xySize.X);  
 }
 
 //==================================================
@@ -77,11 +77,19 @@ void setConsoleCursorPosition(int x, int y) {
   SetConsoleCursorPosition(getStdOutputHandle(), createCoordObject(x, y));
 }
 
+void setVisibleCursor(int yesno) {
+  CONSOLE_CURSOR_INFO cci;
+  GetConsoleCursorInfo(getStdOutputHandle(), &cci);
+  cci.bVisible = yesno;
+  SetConsoleCursorInfo(getStdOutputHandle(), &cci);
+}
+
 void initConsole() {
   COORD xySize = getConsoleMaximumSize();
   COORD xyHome = createCoordObject(0, 0);
   DWORD count;
   setFullScreenConsole();
+  setVisibleCursor(0);
   FillConsoleOutputCharacter(getStdOutputHandle(), ' ', ((int)xySize.X)*((int)xySize.Y), xyHome, &count);
   FillConsoleOutputAttribute(getStdOutputHandle(), getConsoleScreenBufferInfo().wAttributes, ((int)xySize.X)*((int)xySize.Y), xyHome, &count);
   setConsoleCursorPosition(0, 0);
@@ -106,4 +114,45 @@ void writeFullConsoleBuffer(CHAR_INFO buffer[]) {
 
 void delayFPS(int FPS) {
   Sleep(1000/FPS);
+}
+
+void clearBuffer(CHAR_INFO buffer[]) {
+  CONSOLE_SCREEN_BUFFER_INFO csbi;
+  COORD xySize;
+  int i;
+  csbi = getConsoleScreenBufferInfo();
+  xySize = getConsoleMaximumSize();
+  for (i = 0; i < ((int)xySize.X)*((int)xySize.Y); i++) {
+    buffer[i].Char.AsciiChar = ' ';
+    buffer[i].Attributes = csbi.wAttributes;
+  }
+}
+
+void drawTextToBuffer(CHAR_INFO buffer[], int x, int y, const char * format, ...) {
+  char strBuffer[256];
+  va_list args;
+  int len_strBuffer;
+  COORD xySize;
+  int i;
+  va_start(args, format);
+  vsnprintf(strBuffer, 256, format, args);
+  va_end(args);
+  len_strBuffer = strlen(strBuffer);
+  xySize = getConsoleMaximumSize();
+  for (i = x; (i < xySize.X) && (i-x < len_strBuffer); i++) {
+    buffer[COORD2int(i, y, xySize)].Char.AsciiChar = strBuffer[i-x];
+  }
+}
+
+void fastRemoveSmallRectBuffer(CHAR_INFO buffer[], int top, int left, int bottom, int right) {
+  COORD xySize;
+  int i, j, pos;
+  xySize = getConsoleMaximumSize();
+  for (i = left; i <= right; i++) {
+    for (j = top; j <= bottom; j++) {
+      pos = COORD2int(i, j, xySize);
+      if (pos > 0)
+        buffer[pos].Char.AsciiChar = ' ';
+    }
+  }
 }

@@ -5,10 +5,10 @@
 
 // Create objects
 COORD createCoordObject(int x, int y);
-SMALL_RECT createSmallRectObject(int Top, int Left, int Bottom, int Right);
+SMALL_RECT createSmallRectObject(int top, int left, int bottom, int right);
 
 // Converting functions
-int COORD2int(COORD xy, COORD xySize);
+int COORD2int(int x, int y, COORD xySize);
 
 // Get handles
 HWND getConsoleWindow();
@@ -21,11 +21,15 @@ COORD getConsoleMaximumSize();
 // Set console
 void setFullScreenConsole();
 void setConsoleCursorPosition(int x, int y);
+void setVisibleCursor(int yesno);
 void initConsole();
 void readFullConsoleBuffer(CHAR_INFO buffer[]);
 void writeFullConsoleBuffer(CHAR_INFO buffer[]);
 
 // Utilities
 void delayFPS(int FPS);
+void clearBuffer(CHAR_INFO buffer[]);
+void drawTextToBuffer(CHAR_INFO buffer[], int x, int y, const char * format, ...);
+void fastRemoveSmallRectBuffer(CHAR_INFO buffer[], int top, int left, int bottom, int right);
 
 #endif

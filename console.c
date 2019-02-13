@@ -20,9 +20,18 @@ SMALL_RECT createSmallRectObject(int top, int left, int bottom, int right) {
 
 //==================================================
 
-int COORD2int(int x, int y, COORD xySize) {
+int coord2int(int x, int y, COORD xySize) {
   if (x < 0 || y < 0 || x >= xySize.X || y >= xySize.Y) return -1;
   return x + y*((int)xySize.X);  
+}
+
+COORD int2coord(int i, COORD xySize) {
+  COORD xy = createCoordObject(-1, -1);
+  if (i >= 0 && i < ((int)xySize.X)*((int)xySize.Y)) {
+    xy.X = i % ((int)xySize.X);
+    xy.Y = i / ((int)xySize.X);
+  }
+  return xy;
 }
 
 //==================================================
@@ -140,7 +149,7 @@ void drawTextToBuffer(CHAR_INFO buffer[], int x, int y, const char * format, ...
   len_strBuffer = strlen(strBuffer);
   xySize = getConsoleMaximumSize();
   for (i = x; (i < xySize.X) && (i-x < len_strBuffer); i++) {
-    buffer[COORD2int(i, y, xySize)].Char.AsciiChar = strBuffer[i-x];
+    buffer[coord2int(i, y, xySize)].Char.AsciiChar = strBuffer[i-x];
   }
 }
 
@@ -150,7 +159,7 @@ void fastRemoveSmallRectBuffer(CHAR_INFO buffer[], int top, int left, int bottom
   xySize = getConsoleMaximumSize();
   for (i = left; i <= right; i++) {
     for (j = top; j <= bottom; j++) {
-      pos = COORD2int(i, j, xySize);
+      pos = coord2int(i, j, xySize);
       if (pos > 0)
         buffer[pos].Char.AsciiChar = ' ';
     }

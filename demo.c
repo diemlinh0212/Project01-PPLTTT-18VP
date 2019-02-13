@@ -48,25 +48,25 @@ void processConsoleInDemo() {
   if (isPlay && !isGameOver)
     nextFrameGameInDemo();
   for (i = 1; i < xySize.X-1; i++) {
-    buffer[COORD2int(i, 0, xySize)].Char.AsciiChar = '\xcd';
-    buffer[COORD2int(i, xySize.Y-2, xySize)].Char.AsciiChar = '\xcd';
+    buffer[coord2int(i, 0, xySize)].Char.AsciiChar = '\xcd';
+    buffer[coord2int(i, xySize.Y-2, xySize)].Char.AsciiChar = '\xcd';
   }
   for (i = 1; i < xySize.Y-2; i++) {
-    buffer[COORD2int(0, i, xySize)].Char.AsciiChar = '\xba';
-    buffer[COORD2int(xySize.X-1, i, xySize)].Char.AsciiChar = '\xba';
+    buffer[coord2int(0, i, xySize)].Char.AsciiChar = '\xba';
+    buffer[coord2int(xySize.X-1, i, xySize)].Char.AsciiChar = '\xba';
   }
-  buffer[COORD2int(0, 0, xySize)].Char.AsciiChar = '\xc9';
-  buffer[COORD2int(xySize.X-1, 0, xySize)].Char.AsciiChar = '\xbb';
-  buffer[COORD2int(0, xySize.Y-2, xySize)].Char.AsciiChar = '\xc8';
-  buffer[COORD2int(xySize.X-1, xySize.Y-2, xySize)].Char.AsciiChar = '\xbc';
+  buffer[coord2int(0, 0, xySize)].Char.AsciiChar = '\xc9';
+  buffer[coord2int(xySize.X-1, 0, xySize)].Char.AsciiChar = '\xbb';
+  buffer[coord2int(0, xySize.Y-2, xySize)].Char.AsciiChar = '\xc8';
+  buffer[coord2int(xySize.X-1, xySize.Y-2, xySize)].Char.AsciiChar = '\xbc';
   for (i = 0; i < xySize.X-2; i++) {
     for (j = 0; j < xySize.Y-3; j++) {
       if (mapGame[i][j] > 0) {
-        buffer[COORD2int(i+1, j+1, xySize)].Char.AsciiChar = '\xdb';
-        buffer[COORD2int(i+1, j+1, xySize)].Attributes = ((attribute & (~FOREGROUND_RED)) | FOREGROUND_GREEN) & (~FOREGROUND_BLUE);
+        buffer[coord2int(i+1, j+1, xySize)].Char.AsciiChar = '\xdb';
+        buffer[coord2int(i+1, j+1, xySize)].Attributes = ((attribute & (~FOREGROUND_RED)) | FOREGROUND_GREEN) & (~FOREGROUND_BLUE);
       } else if (mapGame[i][j] == -1) {
-        buffer[COORD2int(i+1, j+1, xySize)].Char.AsciiChar = '\xc5';
-        buffer[COORD2int(i+1, j+1, xySize)].Attributes = ((attribute | FOREGROUND_RED) | FOREGROUND_GREEN) & (~FOREGROUND_BLUE);
+        buffer[coord2int(i+1, j+1, xySize)].Char.AsciiChar = '\xc5';
+        buffer[coord2int(i+1, j+1, xySize)].Attributes = ((attribute | FOREGROUND_RED) | FOREGROUND_GREEN) & (~FOREGROUND_BLUE);
       }
     }
   }

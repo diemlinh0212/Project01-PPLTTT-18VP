@@ -8,7 +8,8 @@ COORD createCoordObject(int x, int y);
 SMALL_RECT createSmallRectObject(int top, int left, int bottom, int right);
 
 // Converting functions
-int COORD2int(int x, int y, COORD xySize);
+int coord2int(int x, int y, COORD xySize);
+COORD int2coord(int i, COORD xySize);
 
 // Get handles
 HWND getConsoleWindow();
